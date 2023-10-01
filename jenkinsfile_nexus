@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven "maven_3.8.6"
+    }
+    
+    environment {
+        // Define your environment variables here
+        NEXUS_REPO_URL = 'http://<update-ip>/repository/maven-release/'
+        NEXUS_REPO_CREDENTIALS = credentials('nexus-credentials-id')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code from your version control system (e.g., Git)
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Techwiz33/bmi-calculator.git']]])
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build your Maven application
+                sh "mvn clean install"
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                // Package your application (e.g., create a JAR file)
+                sh "${MAVEN_HOME}/bin/mvn package"
+            }
+        }
+        
+        stage('Publish to Nexus Artifactory') {
+            steps {
+                script {
+                    // Publish artifacts to Nexus Artifactory
+                    def nexusUploadCmd = """${MAVEN_HOME}/bin/mvn deploy:deploy-file
+                        -Durl=${NEXUS_REPO_URL}
+                        -DrepositoryId=nexus
+                        -Dfile=target/your-application.jar
+                        -DgroupId=com.example
+                        -DartifactId=your-application
+                        -Dversion=1.0.0
+                        -Dpackaging=jar
+                        -DgeneratePom=true
+                        -DuniqueVersion=false
+                        -DupdateReleaseInfo=true
+                        -DrepositoryUrl=${NEXUS_REPO_URL}
+                    """
+                    sh nexusUploadCmd
+                }
+            }
+        }
+    }
+}

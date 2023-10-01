@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven "maven_3.8.6"
+    }
+    
+    environment {
+        // Define your environment variables here
+        NEXUS_REPO_URL = 'http://<update-ip>/repository/maven-release/'
+        NEXUS_REPO_CREDENTIALS = credentials('nexus-credentials-id')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code from your version control system (e.g., Git)
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Techwiz33/bmi-calculator.git']]])
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build your Maven application
+                sh "mvn clean install"
+            }
+        }
+        
+        stage('Package') {
+            steps {
+                // Package your application (e.g., create a JAR file)
+                sh "mvn package"
+            }
+        }
+    }
+}
