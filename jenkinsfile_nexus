@@ -9,16 +9,12 @@ pipeline {
         maven "maven_3.8.6"
     }
     
-    environment {
-        // Define your environment variables here
-        NEXUS_REPO_CREDENTIALS = credentials('nexus-credentials-id')
-    }
     
     stages {
         stage('Checkout') {
             steps {
                 // Checkout your source code from your version control system (e.g., Git)
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Techwiz33/bmi-calculator.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Techwiz33/bmi-calculator.git']]])
             }
         }
         
@@ -47,9 +43,9 @@ pipeline {
                 groupId: 'techwiz.lab.apps',
                 version: '1.0',
                 repository: 'maven-releases',
-                credentialsId: $NEXUS_REPO_CREDENTIALS,
+                credentialsId: 'nexus-credentials-id',
                 artifacts: [
-                    [artifactId: projectName,
+                    [artifactId: 'bmi-calculator',
                     classifier: '',
                     file: 'target/bmi-1.0.jar',
                     type: 'jar']
