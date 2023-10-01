@@ -39,22 +39,20 @@ pipeline {
             steps {
                 script {
                     // Publish artifacts to Nexus Artifactory
-                pom = readMaven
-                nexusArtifactUploader(
-                nexusVersion: 'nexus3',
-                protocol: 'http',
-                nexusUrl: '3.84.161.159:8081',
-                groupId: 'techwiz.lab.apps',
-                version: '1.0',
-                repository: 'maven-releases',
-                credentialsId: $NEXUS_REPO_CREDENTIALS,
-                artifacts: [
-                    [artifactId: projectName,
-                    classifier: '',
-                    file: 'target/bmi-1.0.jar',
-                    type: 'jar']
-                    ]       
-                )
+                    def nexusUploadCmd = """mvn deploy:deploy-file
+                        -Durl=${NEXUS_REPO_URL}
+                        -DrepositoryId=nexus
+                        -Dfile=target/your-application.jar
+                        -DgroupId=com.example
+                        -DartifactId=your-application
+                        -Dversion=1.0.0
+                        -Dpackaging=jar
+                        -DgeneratePom=true
+                        -DuniqueVersion=false
+                        -DupdateReleaseInfo=true
+                        -DrepositoryUrl=${NEXUS_REPO_URL}
+                    """
+                    sh nexusUploadCmd
                 }
             }
         }
