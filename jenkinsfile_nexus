@@ -4,7 +4,7 @@ pipeline {
   //  parameters {
   //      string(name: "NEXUS_REPO_URL", description: "https://your-nexus-repo-url/repository/your-repo-name/")
   //  }
-  
+
     tools {
         maven "maven_3.8.6"
     }
@@ -32,7 +32,7 @@ pipeline {
         stage('Package') {
             steps {
                 // Package your application (e.g., create a JAR file)
-                sh "${MAVEN_HOME}/bin/mvn package"
+                sh "mvn package"
             }
         }
         
@@ -40,7 +40,6 @@ pipeline {
             steps {
                 script {
                     // Publish artifacts to Nexus Artifactory
-                pom = readMaven
                 nexusArtifactUploader(
                 nexusVersion: 'nexus3',
                 protocol: 'http',
