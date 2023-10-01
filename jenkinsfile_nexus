@@ -1,13 +1,15 @@
 pipeline {
     agent any
     
+    parameters {
+        string(name: "NEXUS_REPO_URL", description: "https://your-nexus-repo-url/repository/your-repo-name/")
+    }
     tools {
         maven "maven_3.8.6"
     }
     
     environment {
         // Define your environment variables here
-        NEXUS_REPO_URL = 'http://<update-ip>/repository/maven-release/'
         NEXUS_REPO_CREDENTIALS = credentials('nexus-credentials-id')
     }
     
@@ -37,7 +39,7 @@ pipeline {
             steps {
                 script {
                     // Publish artifacts to Nexus Artifactory
-                    def nexusUploadCmd = """${MAVEN_HOME}/bin/mvn deploy:deploy-file
+                    def nexusUploadCmd = """mvn deploy:deploy-file
                         -Durl=${NEXUS_REPO_URL}
                         -DrepositoryId=nexus
                         -Dfile=target/your-application.jar
