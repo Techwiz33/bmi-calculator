@@ -35,7 +35,7 @@ pipeline {
         stage('Publish to Nexus Artifactory') {
             steps {
                 nexusArtifactUploader(
-                    nexusVersion: 'nexus2',
+                    nexusVersion: 'nexus3',
                     protocol: 'http',
                     nexusUrl: '3.84.161.159:8081',
                     groupId: 'techwiz.lab.apps',
@@ -46,7 +46,7 @@ pipeline {
                         [artifactId: 'bmi-calculator',
                         classifier: '',
                         file: 'target/bmi-1.0.jar',
-                        type: 'jar'],
+                        type: 'jar']
                         ]       
                 )
             }
