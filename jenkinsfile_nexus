@@ -34,24 +34,21 @@ pipeline {
         
         stage('Publish to Nexus Artifactory') {
             steps {
-                script {
-                    // Publish artifacts to Nexus Artifactory
                 nexusArtifactUploader(
-                nexusVersion: 'nexus3',
-                protocol: 'http',
-                nexusUrl: '3.84.161.159:8081',
-                groupId: 'techwiz.lab.apps',
-                version: '1.0',
-                repository: 'maven-releases',
-                credentialsId: 'nexus-credentials-id',
-                artifacts: [
-                    [artifactId: 'bmi-calculator',
-                    classifier: '',
-                    file: 'target/bmi-1.0.jar',
-                    type: 'jar']
-                    ]       
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: '3.84.161.159:8081',
+                    groupId: 'techwiz.lab.apps',
+                    version: '1.0',
+                    repository: 'maven-releases',
+                    credentialsId: 'nexus-credentials-id',
+                    artifacts: [
+                        [artifactId: 'bmi-calculator',
+                        classifier: '',
+                        file: 'target/bmi-1.0.jar',
+                        type: 'jar']
+                        ]       
                 )
-                }
             }
         }
     }
