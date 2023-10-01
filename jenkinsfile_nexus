@@ -1,9 +1,10 @@
 pipeline {
     agent any
     
-    parameters {
-        string(name: "NEXUS_REPO_URL", description: "https://your-nexus-repo-url/repository/your-repo-name/")
-    }
+  //  parameters {
+  //      string(name: "NEXUS_REPO_URL", description: "https://your-nexus-repo-url/repository/your-repo-name/")
+  //  }
+  
     tools {
         maven "maven_3.8.6"
     }
