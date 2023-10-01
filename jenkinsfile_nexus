@@ -35,7 +35,6 @@ pipeline {
         stage('Publish to Nexus Artifactory') {
             steps {
                 script {
-                    def nexusCredentials = credentials('nexus-credentials-id')
                     nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
@@ -43,7 +42,7 @@ pipeline {
                     groupId: 'techwiz.lab.apps',
                     version: '1.0',
                     repository: 'maven-releases',
-                    credentialsId: 'nexusCredentials.id',
+                    credentialsId: 'nexus_admin',
                     artifacts: [
                         [artifactId: 'bmi-calculator',
                         classifier: '',
