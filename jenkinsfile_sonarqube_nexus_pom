@@ -1,0 +1,78 @@
+pipeline {
+    agent any
+    
+   parameters {
+       string(name: "NEXUS_REPO_URL", description: "https://your-nexus-repo-url/repository/your-repo-name/")
+   }
+
+    tools {
+        maven "maven_3.8.6"
+    }
+    
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code from your version control system (e.g., Git)
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/Techwiz33/bmi-calculator.git']]])
+            }
+        }
+
+        // stage('Build') {
+        //     steps {
+        //         // Build your Maven application
+        //         sh "mvn clean install"
+        //     }
+        // }
+
+        stage('Build and Sonarqube') {
+            steps {
+                withSonarQubeEnv(installationName: 'Sonarqube', credentialsId: 'sonarqube_token_2') {
+                    sh "mvn clean verify sonar:sonar -Dsonar.projectkey=bmi-app"
+                }
+            }
+        }
+
+        stage('QualitGate'){
+            steps {
+                timeout(time: 1, unit: 'HOURS'){
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+  
+        stage('Package') {
+            steps {
+                // Package your application (e.g., create a JAR file)
+                sh "mvn package"
+            }
+        }
+        
+        stage('Publish to Nexus Artifactory') {
+            steps {
+                script {
+                    pom = readMavenPom file: "pom.xml"
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob}"
+                    artifactPath = filesByGlob[0].path;
+                    nexusArtifactUploader(
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        nexusUrl: '${NEXUS_REPO_URL}',
+                        groupId: pom.groupId,
+                        version: pom.version,
+                        repository: 'maven-releases/',
+                        credentialsId: 'nexus_admin',
+                        artifacts: [
+                            [artifactId: pom.artifactId,
+                            classifier: '',
+                            file: artifactPath,
+                            type: pom.packaging]
+                            ]       
+                    )
+                }
+
+            }
+        }
+    }
+}
