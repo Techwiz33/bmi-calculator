@@ -40,7 +40,7 @@ pipeline {
                     protocol: 'http',
                     nexusUrl: '3.84.161.159:8081',
                     groupId: 'techwiz.lab.apps',
-                    version: '1.0.${env.BUILD_NUMBER}',
+                    version: '1.0',
                     repository: 'maven-releases',
                     credentialsId: 'nexus_admin',
                     artifacts: [
