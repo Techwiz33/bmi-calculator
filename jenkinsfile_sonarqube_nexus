@@ -54,7 +54,7 @@ pipeline {
                     nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
-                    nexusUrl: ${NEXUS_REPO_URL},
+                    nexusUrl: '${NEXUS_REPO_URL}',
                     groupId: 'techwiz.lab.apps',
                     version: '1.0',
                     repository: 'maven-releases',
