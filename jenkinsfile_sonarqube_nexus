@@ -57,7 +57,7 @@ pipeline {
                     nexusUrl: '${NEXUS_REPO_URL}',
                     groupId: 'techwiz.lab.apps',
                     version: '1.0',
-                    repository: 'maven-releases',
+                    repository: 'maven-releases/',
                     credentialsId: 'nexus_admin',
                     artifacts: [
                         [artifactId: 'bmi-calculator',
