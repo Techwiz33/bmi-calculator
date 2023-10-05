@@ -27,7 +27,9 @@ pipeline {
 
         stage('Build and Sonarqube') {
             steps {
-                sh "mvn clean verify sonar:sonar -Dsonar.projectkey=bmi-app"
+                withSonarQubeEnv(installationName: 'Sonarqube', credentialsId: 'sonarqube_token_2') {
+                    sh "mvn clean verify sonar:sonar -Dsonar.projectkey=bmi-app"
+                }
             }
         }
 
